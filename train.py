@@ -121,7 +121,9 @@ if __name__ == '__main__':
     						   filenames={'train': 'train.csv',
     						   			  'validation': 'val.csv'.
     						   			  'test': None})
-    data_handler.load_vocab('./model/TEXT.Field')
+
+    vocab_path = os.path.join(args.experiment_dir, 'TEXT.Field')
+    data_handler.load_vocab(vocab_path)
 
     train_iter, val_iter = data_handler.gen_iterator(batch_size=params.batch_size)
     train_size, val_size = data_handler.data_size

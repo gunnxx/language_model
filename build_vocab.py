@@ -9,7 +9,7 @@ from model.data_handler import DataHandler
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_dir', default='./data', help='Parent directory where data is being saved')
 parser.add_argument('--train', default='train.csv', help='Training dataset')
-parser.add_argument('--param_dir', default='./experiments/base_model')
+parser.add_argument('--param_dir', default='./experiments/base_model', help='Requiring vocab size for particular experiment')
 
 
 if __name__ == '__main__':
