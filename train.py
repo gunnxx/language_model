@@ -19,7 +19,7 @@ parser.add_argument('--experiment_dir', default='./experiments/base_model', help
 
 
 def train(model, optimizer, loss_fn, train_iterator, params):
-	"""Train the model on one epoch
+    """Train the model on one epoch
 
     Args:
         model: (torch.nn.Module) the neural network
@@ -33,14 +33,14 @@ def train(model, optimizer, loss_fn, train_iterator, params):
     model.train()
 
     total_loss = 0
-	for batch in tqdm.tqdm(train_iterator, total=params.train_size//params.batch_size):
+    for batch in tqdm.tqdm(train_iterator, total=params.train_size//params.batch_size):
 
-		# compute model output and loss
-		output = model(batch.input)
-		loss = loss_fn(output, batch.target)
-		total_loss = total_loss + loss
+        # compute model output and loss
+        output = model(batch.input)
+        loss = loss_fn(output, batch.target)
+        total_loss = total_loss + loss
 
-		# clear previous gradients, compute gradients of all variables wrt loss
+        # clear previous gradients, compute gradients of all variables wrt loss
         optimizer.zero_grad()
         loss.backward()
 
@@ -51,7 +51,7 @@ def train(model, optimizer, loss_fn, train_iterator, params):
 
 
 def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, params):
-	"""Train the model and evaluate every epoch
+    """Train the model and evaluate every epoch
 
     Args:
         model: (torch.nn.Module) the neural network
@@ -62,13 +62,13 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
         params: (Params) hyperparameters
     """
 
-	# reload weights from checkpoint_file if specified
+    # reload weights from checkpoint_file if specified
 
 
-	best_val_loss = torch.tensor(float("Inf"))
+    best_val_loss = torch.tensor(float("Inf"))
 
-	# training on num_epochs
-	for epoch in range(params.num_epochs):
+    # training on num_epochs
+    for epoch in range(params.num_epochs):
         logging.info("Epoch {}/{}".format(epoch + 1, params.num_epochs))
 
         # Run one epoch
@@ -77,29 +77,29 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
 
         # Save best model
         if val_loss <= best_val_loss:
-        	best_val_loss = val_loss
+            best_val_loss = val_loss
 
-        	path = os.path.join(args.experiment_dir, 'best.pth.tar')
-        	torch.save({'epoch': epoch+1,
-        				'model': model.state_dict(),
-        				'optimizer': optim.state_dict,
-        				'loss': best_val_loss},
-        				path)
+            path = os.path.join(args.experiment_dir, 'best.pth.tar')
+            torch.save({'epoch': epoch+1,
+                        'model': model.state_dict(),
+                        'optimizer': optim.state_dict,
+                        'loss': best_val_loss},
+                        path)
 
         # Save latest model
         path = os.path.join(args.experiment_dir, 'latest.pth.tar')
-    	torch.save({'epoch': epoch+1,
-    				'model': model.state_dict(),
-    				'optimizer': optim.state_dict,
-    				'loss': val_loss},
-    				path)
+        torch.save({'epoch': epoch+1,
+                    'model': model.state_dict(),
+                    'optimizer': optim.state_dict,
+                    'loss': val_loss},
+                    path)
 
 
 if __name__ == '__main__':
-	args = parser.parse_args()
+    args = parser.parse_args()
 
-	# Load parameters from json file
-	json_path = os.path.join(args.experiment_dir, 'params.json')
+    # Load parameters from json file
+    json_path = os.path.join(args.experiment_dir, 'params.json')
     assert os.path.isfile(json_path), "No json configuration file found at {}".format(json_path)
     params = utils.Params(json_path)
 
@@ -118,9 +118,9 @@ if __name__ == '__main__':
     
     # Load data and get iterator
     data_handler = DataHandler(dir_path=args.data_dir,
-    						   filenames={'train': 'train.csv',
-    						   			  'validation': 'val.csv'.
-    						   			  'test': None})
+                               filenames={'train': 'train.csv',
+                                          'validation': 'val.csv',
+                                          'test': None})
 
     vocab_path = os.path.join(args.experiment_dir, 'TEXT.Field')
     data_handler.load_vocab(vocab_path)
@@ -135,11 +135,11 @@ if __name__ == '__main__':
 
     # Define model
     model = net.Net(params.embedding_dim,
-    				params.lstm_hidden_dim,
-    				params.fc_hidden_dim,
-    				params.vocab_size,
-    				params.num_layers,
-    				params.bidirectional)
+                    params.lstm_hidden_dim,
+                    params.fc_hidden_dim,
+                    params.vocab_size,
+                    params.num_layers,
+                    params.bidirectional)
     if params.cuda: model.cuda()
 
     # Define optimizer and loss function
