@@ -31,3 +31,20 @@ class Net(nn.Module):
         s = F.softmax(s, dim=2)
         s = s.transpose(1, 2)    # (seq_len, vocab_size, batch_size)
         return s
+
+def perplexity(preds, labels):
+    """Compute average perplexity of a batch.
+
+    Args:
+        preds of shape (seq_len, vocab_size, batch_size)
+        labels of (seq_len, batch_size)
+    """
+
+    n = labels.shape[0]
+
+    labels = labels.unsqueeze(1)    # (seq_len, 1, batch_size)
+    probs = preds.gather(1, labels) # (seq_len, 1, batch_size)
+
+    perplex = probs.prod(0).prod(0) # (batch_size)
+    perplex = perplex.type(torch.float).pow(1/n)
+    return perplex.mean()

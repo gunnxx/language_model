@@ -16,6 +16,7 @@ from evaluate import evaluate
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_dir', default='./data', help='Directory containing datasets')
 parser.add_argument('--experiment_dir', default='./experiments/base_model', help='Directory containing the experiment setup')
+parser.add_argument('--restore_file', default=None, help='Training checkpoint file name inside experiment_dir (optional)')
 
 
 def train(model, optimizer, loss_fn, train_iterator, params):
@@ -34,6 +35,9 @@ def train(model, optimizer, loss_fn, train_iterator, params):
 
     total_loss = 0
     for batch in tqdm.tqdm(train_iterator, total=params.train_size//params.batch_size):
+
+        batch.input.to(params.device)
+        batch.target.to(params.device)
 
         # compute model output and loss
         output = model(batch.input)
@@ -63,7 +67,16 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
     """
 
     # reload weights from checkpoint_file if specified
+    if restore_file:
+        restore_path = os.path.join(args.experiment_dir, args.restore_file)
 
+        logging.info("Restoring parameters from {}".format(restore_path))
+        if not os.path.exists(restore_path):
+            raise ("File doesn't exist")
+
+        checkpoint = torch.load(restore_path)
+        model.load_state_dict(checkpoint['model'])
+        optimizer.load_state_dict(checkpoint['optimizer'])
 
     best_val_loss = torch.tensor(float("Inf"))
 
@@ -105,6 +118,7 @@ if __name__ == '__main__':
 
     # use GPU if available
     params.cuda = torch.cuda.is_available()
+    params.device = torch.device('cuda:0' if params.cuda else 'cpu')
     
     # Set the random seed for reproducible experiments
     torch.manual_seed(230)
@@ -140,7 +154,7 @@ if __name__ == '__main__':
                     params.vocab_size,
                     params.num_layers,
                     params.bidirectional)
-    if params.cuda: model.cuda()
+    model.to(params.device)
 
     # Define optimizer and loss function
     optimizer = optim.Adam(model.parameters(), lr=params.learning_rate)

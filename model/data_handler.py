@@ -63,7 +63,7 @@ class DataHandler(object):
         
         # Load data.Field
         field = None
-        with open(file_path, "r") as f:
+        with open(file_path, "rb") as f:
             field = dill.load(f)
 
         # Construct datafields to be passed to TabularDataset

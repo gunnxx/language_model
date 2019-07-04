@@ -4,7 +4,7 @@ import os
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--')
+#parser.add_argument('--')
 
 
 def evaluate(model, optimizer, loss_fn, val_iterator, params):
@@ -23,6 +23,9 @@ def evaluate(model, optimizer, loss_fn, val_iterator, params):
 
     total_loss = 0
     for batch in val_iterator:
+
+        batch.input.to(params.device)
+        batch.target.to(params.device)
 
         # compute model output and loss
         output = model(batch.input)
