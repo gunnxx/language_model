@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import torch
 
 
 parser = argparse.ArgumentParser()
@@ -18,16 +19,17 @@ def evaluate(model, optimizer, loss_fn, val_iterator, params):
         params: (Params) hyperparameters
     """
 
-    # set model to evaluation mode
-    model.eval()
+    with torch.no_grad():
+        model.eval()
 
-    total_loss = 0
-    for batch in val_iterator:
+        total_loss = 0
+        for batch in val_iterator:
 
-        # compute model output and loss
-        output = model(batch.input.to(params.device))
-        loss = loss_fn(output, batch.target.to(params.device).long())
-        total_loss = total_loss + loss
+            # compute model output and loss
+            output = model(batch.input.to(params.device))
+            loss = loss_fn(output, batch.target.to(params.device).long())
+            total_loss = total_loss + loss
 
-    logging.info("- Evaluation entropy loss: " + str(total_loss.item()))
+        logging.info("- Evaluation entropy loss: " + str(total_loss.item()))
+
     return total_loss
