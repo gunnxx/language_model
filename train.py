@@ -127,7 +127,7 @@ if __name__ == '__main__':
     logging.info("Loading the datasets...")
     
     # Load data and get iterator
-    vocab_path = os.path.join(args.experiment_dir, 'TEXT.Field')
+    vocab_path = './model/TEXT.Field'
     train_file_path = os.path.join(args.data_dir, 'train.csv')
     val_file_path = os.path.join(args.data_dir, 'val.csv')
 
@@ -140,6 +140,7 @@ if __name__ == '__main__':
 
     params.train_size = train_size
     params.val_size   = val_size
+    params.vocab_size = len(data_handler.vocab.itos)
 
     logging.info('- done.')
 
