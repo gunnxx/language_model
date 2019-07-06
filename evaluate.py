@@ -24,13 +24,10 @@ def evaluate(model, optimizer, loss_fn, val_iterator, params):
     total_loss = 0
     for batch in val_iterator:
 
-        batch.input.to(params.device)
-        batch.target.to(params.device)
-
         # compute model output and loss
-        output = model(batch.input)
-        loss = loss_fn(output, batch.target)
+        output = model(batch.input.to(params.device))
+        loss = loss_fn(output, batch.target.to(params.device).long())
         total_loss = total_loss + loss
 
-    logging.info("- Evaluation entropy loss: " + total_loss)
+    logging.info("- Evaluation entropy loss: " + str(total_loss.item()))
     return total_loss

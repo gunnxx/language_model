@@ -36,12 +36,9 @@ def train(model, optimizer, loss_fn, train_iterator, params):
     total_loss = 0
     for batch in tqdm.tqdm(train_iterator, total=params.train_size//params.batch_size):
 
-        batch.input.to(params.device)
-        batch.target.to(params.device)
-
         # compute model output and loss
-        output = model(batch.input)
-        loss = loss_fn(output, batch.target)
+        output = model(batch.input.to(params.device))
+        loss = loss_fn(output, batch.target.to(params.device).long())
         total_loss = total_loss + loss
 
         # clear previous gradients, compute gradients of all variables wrt loss
@@ -51,7 +48,7 @@ def train(model, optimizer, loss_fn, train_iterator, params):
         # performs updates using calculated gradients
         optimizer.step()
 
-    logging.info("- Train entropy loss: " + total_loss)
+    logging.info("- Train entropy loss: " + str(total_loss.item()))
 
 
 def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, params):
@@ -67,7 +64,7 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
     """
 
     # reload weights from checkpoint_file if specified
-    if restore_file:
+    if args.restore_file:
         restore_path = os.path.join(args.experiment_dir, args.restore_file)
 
         logging.info("Restoring parameters from {}".format(restore_path))
@@ -95,7 +92,7 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
             path = os.path.join(args.experiment_dir, 'best.pth.tar')
             torch.save({'epoch': epoch+1,
                         'model': model.state_dict(),
-                        'optimizer': optim.state_dict,
+                        'optimizer': optimizer.state_dict(),
                         'loss': best_val_loss},
                         path)
 
@@ -103,7 +100,7 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
         path = os.path.join(args.experiment_dir, 'latest.pth.tar')
         torch.save({'epoch': epoch+1,
                     'model': model.state_dict(),
-                    'optimizer': optim.state_dict,
+                    'optimizer': optimizer.state_dict(),
                     'loss': val_loss},
                     path)
 
@@ -117,12 +114,11 @@ if __name__ == '__main__':
     params = utils.Params(json_path)
 
     # use GPU if available
-    params.cuda = torch.cuda.is_available()
-    params.device = torch.device('cuda:0' if params.cuda else 'cpu')
+    params.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     
     # Set the random seed for reproducible experiments
     torch.manual_seed(230)
-    if params.cuda: torch.cuda.manual_seed(230)
+    if torch.cuda.is_available(): torch.cuda.manual_seed(230)
 
     # Set the logger
     utils.set_logger(os.path.join(args.experiment_dir, 'train.log'))
@@ -131,13 +127,13 @@ if __name__ == '__main__':
     logging.info("Loading the datasets...")
     
     # Load data and get iterator
-    data_handler = DataHandler(dir_path=args.data_dir,
-                               filenames={'train': 'train.csv',
-                                          'validation': 'val.csv',
-                                          'test': None})
-
     vocab_path = os.path.join(args.experiment_dir, 'TEXT.Field')
+    train_file_path = os.path.join(args.data_dir, 'train.csv')
+    val_file_path = os.path.join(args.data_dir, 'val.csv')
+
+    data_handler = DataHandler()
     data_handler.load_vocab(vocab_path)
+    data_handler.load_dataset(train_file=train_file_path, val_file=val_file_path)
 
     train_iter, val_iter = data_handler.gen_iterator(batch_size=params.batch_size)
     train_size, val_size = data_handler.data_size
