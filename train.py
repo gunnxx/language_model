@@ -34,12 +34,18 @@ def train(model, optimizer, loss_fn, train_iterator, params):
     model.train()
 
     total_loss = 0
-    for batch in tqdm.tqdm(train_iterator, total=params.train_size//params.batch_size):
+    total_perplexity = 0
+    num_steps = params.train_size//params.batch_size
 
-        # compute model output and loss
+    for batch in tqdm.tqdm(train_iterator, total=num_steps):
+
+        # compute model output, loss, and perplexity
         output = model(batch.input.to(params.device))
         loss = loss_fn(output, batch.target.to(params.device).long())
+        perplexity = net.perplexity(output, batch.target.to(params.device).long())
+        
         total_loss = total_loss + loss
+        total_perplexity = total_perplexity + perplexity
 
         # clear previous gradients, compute gradients of all variables wrt loss
         optimizer.zero_grad()
@@ -48,7 +54,9 @@ def train(model, optimizer, loss_fn, train_iterator, params):
         # performs updates using calculated gradients
         optimizer.step()
 
-    logging.info("- Train entropy loss: " + str(total_loss.item()))
+    mean_loss = total_loss/num_steps
+    mean_perplexity = total_perplexity/num_steps
+    logging.info("- Training metrics: {} ; {}".format(str(mean_loss.item()), str(mean_perplexity.item())))
 
 
 def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, params):
@@ -75,7 +83,8 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
         model.load_state_dict(checkpoint['model'])
         optimizer.load_state_dict(checkpoint['optimizer'])
 
-    best_val_loss = torch.tensor(float("Inf"))
+    best_val_perplexity = torch.tensor(float("Inf")).to(params.device)
+    best_val_loss = torch.tensor(float("Inf")).to(params.device)
 
     # training on num_epochs
     for epoch in range(params.num_epochs):
@@ -83,17 +92,30 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
 
         # Run one epoch
         train(model, optimizer, loss_fn, train_iterator, params)
-        val_loss = evaluate(model, optimizer, loss_fn, val_iterator, params)
+        val_metric = evaluate(model, optimizer, loss_fn, val_iterator, params)
 
-        # Save best model
-        if val_loss <= best_val_loss:
-            best_val_loss = val_loss
+        # Save best model regards on loss
+        if val_metric['loss'] < best_val_loss:
+            best_val_loss = val_metric['loss']
 
-            path = os.path.join(args.experiment_dir, 'best.pth.tar')
+            path = os.path.join(args.experiment_dir, 'best_loss.pth.tar')
             torch.save({'epoch': epoch+1,
                         'model': model.state_dict(),
                         'optimizer': optimizer.state_dict(),
-                        'loss': best_val_loss},
+                        'loss': val_metric['loss'],
+                        'perplexity': val_metric['perplexity']},
+                        path)
+
+        # Save best model regards on perplexity
+        if val_metric['perplexity'] < best_val_perplexity:
+            best_val_perplexity = val_metric['perplexity']
+
+            path = os.path.join(args.experiment_dir, 'best_perplexity.pth.tar')
+            torch.save({'epoch': epoch+1,
+                        'model': model.state_dict(),
+                        'optimizer': optimizer.state_dict(),
+                        'loss': val_metric['loss'],
+                        'perplexity': val_metric['perplexity']},
                         path)
 
         # Save latest model
@@ -101,7 +123,8 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
         torch.save({'epoch': epoch+1,
                     'model': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
-                    'loss': val_loss},
+                    'loss': val_metric['loss'],
+                    'perplexity': val_metric['perplexity']},
                     path)
 
 

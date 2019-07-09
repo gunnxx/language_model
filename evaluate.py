@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import torch
+import model.net as net
 
 
 parser = argparse.ArgumentParser()
@@ -23,13 +24,21 @@ def evaluate(model, optimizer, loss_fn, val_iterator, params):
         model.eval()
 
         total_loss = 0
+        total_perplexity = 0
+        num_steps = params.val_size//params.batch_size
+
         for batch in val_iterator:
 
             # compute model output and loss
             output = model(batch.input.to(params.device))
             loss = loss_fn(output, batch.target.to(params.device).long())
+            perplexity = net.perplexity(output, batch.target.to(params.device).long())
+        
             total_loss = total_loss + loss
+            total_perplexity = total_perplexity + perplexity
 
-        logging.info("- Evaluation entropy loss: " + str(total_loss.item()))
+        mean_loss = total_loss/num_steps
+        mean_perplexity = total_perplexity/num_steps
+        logging.info("- Evaluation metrics: {} ; {}".format(str(mean_loss.item()), str(mean_perplexity.item())))
 
-    return total_loss
+    return {'loss': mean_loss, 'perplexity':mean_perplexity}
