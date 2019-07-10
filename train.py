@@ -33,8 +33,8 @@ def train(model, optimizer, loss_fn, train_iterator, params):
     # set model to training mode
     model.train()
 
-    total_loss = 0
-    total_perplexity = 0
+    total_loss = 0.
+    total_perplexity = 0.
     num_steps = params.train_size//params.batch_size
 
     for batch in tqdm.tqdm(train_iterator, total=num_steps):
@@ -44,8 +44,8 @@ def train(model, optimizer, loss_fn, train_iterator, params):
         loss = loss_fn(output, batch.target.to(params.device).long())
         perplexity = net.perplexity(output, batch.target.to(params.device).long())
         
-        total_loss = total_loss + loss
-        total_perplexity = total_perplexity + perplexity
+        total_loss = total_loss + loss.item()
+        total_perplexity = total_perplexity + perplexity.item()
 
         # clear previous gradients, compute gradients of all variables wrt loss
         optimizer.zero_grad()
@@ -56,7 +56,7 @@ def train(model, optimizer, loss_fn, train_iterator, params):
 
     mean_loss = total_loss/num_steps
     mean_perplexity = total_perplexity/num_steps
-    logging.info("- Training metrics: {} ; {}".format(str(mean_loss.item()), str(mean_perplexity.item())))
+    logging.info("- Training metrics: {} ; {}".format(str(mean_loss), str(mean_perplexity)))
 
 
 def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, params):
@@ -83,8 +83,8 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
         model.load_state_dict(checkpoint['model'])
         optimizer.load_state_dict(checkpoint['optimizer'])
 
-    best_val_perplexity = torch.tensor(float("Inf")).to(params.device)
-    best_val_loss = torch.tensor(float("Inf")).to(params.device)
+    best_val_perplexity = 0.
+    best_val_loss = float("Inf")
 
     # training on num_epochs
     for epoch in range(params.num_epochs):
@@ -95,7 +95,7 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
         val_metric = evaluate(model, optimizer, loss_fn, val_iterator, params)
 
         # Save best model regards on loss
-        if val_metric['loss'] < best_val_loss:
+        if val_metric['loss'] <= best_val_loss:
             best_val_loss = val_metric['loss']
 
             path = os.path.join(args.experiment_dir, 'best_loss.pth.tar')
@@ -107,7 +107,7 @@ def train_and_evaluate(model, optimizer, loss_fn, train_iterator, val_iterator, 
                         path)
 
         # Save best model regards on perplexity
-        if val_metric['perplexity'] < best_val_perplexity:
+        if val_metric['perplexity'] >= best_val_perplexity:
             best_val_perplexity = val_metric['perplexity']
 
             path = os.path.join(args.experiment_dir, 'best_perplexity.pth.tar')

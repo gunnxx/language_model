@@ -39,12 +39,18 @@ def perplexity(preds, labels):
         preds of shape (seq_len, vocab_size, batch_size)
         labels of (seq_len, batch_size)
     """
+    # deactivate grad_fn tracking history
+    preds = preds.detach()
+    labels = labels.detach()
 
     n = labels.shape[0]
 
     labels = labels.unsqueeze(1)    # (seq_len, 1, batch_size)
     probs = preds.gather(1, labels) # (seq_len, 1, batch_size)
 
-    perplex = probs.prod(0).prod(0) # (batch_size)
+    # OPERATIONS ORDER CAN'T BE CHANGED!!
+    # IF perplex.prod(0).prod(0) EVALUATED FIRST, IT'LL RESULT TO 0
+    perplex = 1/probs
     perplex = perplex.type(torch.float).pow(1/n)
+    perplex = perplex.prod(0).prod(0)
     return perplex.mean()
