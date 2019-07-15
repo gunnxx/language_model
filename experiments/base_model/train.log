@@ -1,0 +1,83 @@
+2019-07-06 05:35:12,569:INFO: Loading the datasets...
+2019-07-06 05:35:49,824:INFO: - done.
+2019-07-06 05:35:52,493:INFO: Starting training for 200 epoch(s)
+2019-07-06 05:35:52,493:INFO: Epoch 1/200
+2019-07-06 07:18:39,124:INFO: - Train entropy loss: 738311.0625
+2019-07-06 13:56:00,242:INFO: Loading the datasets...
+2019-07-06 13:56:37,393:INFO: - done.
+2019-07-06 13:56:40,008:INFO: Starting training for 20 epoch(s)
+2019-07-06 13:56:40,009:INFO: Epoch 1/20
+2019-07-06 15:32:12,810:INFO: - Train entropy loss: 738320.625
+2019-07-06 16:09:51,667:INFO: Loading the datasets...
+2019-07-06 16:10:28,922:INFO: - done.
+2019-07-06 16:10:31,582:INFO: Starting training for 20 epoch(s)
+2019-07-06 16:10:31,582:INFO: Epoch 1/20
+2019-07-06 17:53:20,029:INFO: - Train entropy loss: 738311.0625
+2019-07-06 17:58:37,174:INFO: - Evaluation entropy loss: 82025.6015625
+2019-07-07 03:50:33,324:INFO: Loading the datasets...
+2019-07-07 03:51:10,838:INFO: - done.
+2019-07-07 03:51:13,544:INFO: Starting training for 20 epoch(s)
+2019-07-07 03:51:13,545:INFO: Epoch 1/20
+2019-07-07 05:34:00,450:INFO: - Train entropy loss: 735763.0
+2019-07-07 05:39:17,885:INFO: - Evaluation entropy loss: 81723.7890625
+2019-07-07 05:39:25,039:INFO: Epoch 2/20
+2019-07-07 07:22:11,815:INFO: - Train entropy loss: 735517.4375
+2019-07-07 07:27:29,605:INFO: - Evaluation entropy loss: 81717.4140625
+2019-07-07 07:27:36,796:INFO: Epoch 3/20
+2019-07-07 09:10:22,624:INFO: - Train entropy loss: 735344.8125
+2019-07-07 09:15:39,756:INFO: - Evaluation entropy loss: 81685.8203125
+2019-07-07 09:15:46,920:INFO: Epoch 4/20
+2019-07-07 10:58:32,289:INFO: - Train entropy loss: 735142.0
+2019-07-07 11:03:50,062:INFO: - Evaluation entropy loss: 81676.921875
+2019-07-07 11:03:57,315:INFO: Epoch 5/20
+2019-07-07 12:46:44,929:INFO: - Train entropy loss: 735100.8125
+2019-07-07 12:52:01,919:INFO: - Evaluation entropy loss: 81674.828125
+2019-07-07 12:52:09,049:INFO: Epoch 6/20
+2019-07-07 14:34:51,066:INFO: - Train entropy loss: 735091.0625
+2019-07-07 14:40:08,306:INFO: - Evaluation entropy loss: 81673.640625
+2019-07-07 14:40:15,443:INFO: Epoch 7/20
+2019-07-07 16:22:58,886:INFO: - Train entropy loss: 735084.75
+2019-07-07 16:28:15,947:INFO: - Evaluation entropy loss: 81673.7265625
+2019-07-07 16:28:19,562:INFO: Epoch 8/20
+2019-07-07 18:11:04,047:INFO: - Train entropy loss: 735052.5
+2019-07-07 18:16:20,863:INFO: - Evaluation entropy loss: 81649.3671875
+2019-07-07 18:16:27,990:INFO: Epoch 9/20
+2019-07-07 19:59:11,684:INFO: - Train entropy loss: 734780.375
+2019-07-07 20:04:29,052:INFO: - Evaluation entropy loss: 81633.2265625
+2019-07-07 20:04:36,224:INFO: Epoch 10/20
+2019-07-07 21:47:20,752:INFO: - Train entropy loss: 734672.25
+2019-07-07 21:52:37,668:INFO: - Evaluation entropy loss: 81629.265625
+2019-07-07 21:52:44,795:INFO: Epoch 11/20
+2019-07-07 23:35:28,100:INFO: - Train entropy loss: 734641.625
+2019-07-07 23:40:45,282:INFO: - Evaluation entropy loss: 81624.0859375
+2019-07-07 23:40:52,425:INFO: Epoch 12/20
+2019-07-08 01:23:32,998:INFO: - Train entropy loss: 734618.0625
+2019-07-08 01:28:49,882:INFO: - Evaluation entropy loss: 81624.7890625
+2019-07-08 01:28:53,460:INFO: Epoch 13/20
+2019-07-08 03:11:38,541:INFO: - Train entropy loss: 734599.4375
+2019-07-08 03:16:55,525:INFO: - Evaluation entropy loss: 81621.890625
+2019-07-08 03:17:02,686:INFO: Epoch 14/20
+2019-07-08 04:59:45,407:INFO: - Train entropy loss: 734601.0
+2019-07-08 05:05:02,343:INFO: - Evaluation entropy loss: 81623.6015625
+2019-07-08 05:05:05,967:INFO: Epoch 15/20
+2019-07-08 06:47:49,477:INFO: - Train entropy loss: 734600.625
+2019-07-08 06:53:07,236:INFO: - Evaluation entropy loss: 81617.2421875
+2019-07-08 06:53:14,392:INFO: Epoch 16/20
+2019-07-08 08:35:57,221:INFO: - Train entropy loss: 734587.0
+2019-07-08 08:41:14,174:INFO: - Evaluation entropy loss: 81621.6015625
+2019-07-08 08:41:17,833:INFO: Epoch 17/20
+2019-07-08 10:23:59,140:INFO: - Train entropy loss: 734591.625
+2019-07-08 10:29:15,804:INFO: - Evaluation entropy loss: 81622.9140625
+2019-07-08 10:29:19,495:INFO: Epoch 18/20
+2019-07-08 12:12:01,718:INFO: - Train entropy loss: 734587.0
+2019-07-08 12:17:18,953:INFO: - Evaluation entropy loss: 81619.84375
+2019-07-08 12:17:22,485:INFO: Epoch 19/20
+2019-07-08 14:00:05,186:INFO: - Train entropy loss: 734594.9375
+2019-07-08 14:05:22,321:INFO: - Evaluation entropy loss: 81620.7578125
+2019-07-08 14:05:25,863:INFO: Epoch 20/20
+2019-07-08 15:48:08,298:INFO: - Train entropy loss: 734575.8125
+2019-07-08 15:53:25,363:INFO: - Evaluation entropy loss: 81620.4765625
+2019-07-10 05:01:46,100:INFO: Loading the datasets...
+2019-07-10 05:02:24,227:INFO: - done.
+2019-07-10 05:02:26,919:INFO: Starting training for 200 epoch(s)
+2019-07-10 05:02:26,919:INFO: Restoring parameters from ./experiments/base_model/experiments/base_model_2/latest.pth.tar
